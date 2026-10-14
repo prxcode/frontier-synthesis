@@ -1,0 +1,8 @@
+\section{Discussion}
+\label{sec:discussion}
+%DISCUSSION%
+
+\subsection{Threats to Validity}
+\label{sec:validity}
+\textbf{Grading.} Correctness is decided by alias matching and refusals by regular expressions. Alias lists are incomplete for some PopQA subjects, so a few correct answers may be counted as hallucinations, and unusual phrasings of refusals may be missed. %AUDIT%
+\textbf{Scale and scope.} We study models of up to 3B parameters, 4-bit quantised and run on a CPU; larger models, other quantisation levels and other model families may behave differently. Questions are short, English and factoid, and the minimal pairs cover Western-centric general knowledge. \textbf{Signals.} With $K{=}5$ samples and a lexical equivalence test, our consistency signals are a lower bound on what NLI-based semantic entropy with more samples can achieve~\cite{farquhar2024nature}. \textbf{Construct.} Absence from Wikipedia is strong evidence, but not proof, that a fabricated name refers to nothing. Our refusal labels also do not distinguish a principled premise correction from a generic ``I don't know''.

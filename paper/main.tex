@@ -1,0 +1,63 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{newtxmath}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\input{numbers.tex}
+% Visible marker for anything that must be completed by the authors before submission.
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\bench}{\textsc{EdgeProbe}}
+\newcommand{\pik}{P(IK)}
+\newcommand{\ptrue}{P(True)}
+
+\begin{document}
+
+\title{Knowing the Edge: Do Small Language Models Recognize the Limits of Their Own Knowledge?}
+
+% ---- Author block: replace with the real author names, departments and e-mails. ----
+\author{
+\IEEEauthorblockN{Author One, Author Two, Author Three, Author Four}
+\IEEEauthorblockA{\textit{Department of Computer Engineering} \\
+\textit{Name of College / Institute}\\
+City, Country \\
+\{author1, author2\}@institute.edu}
+\and
+\IEEEauthorblockN{Author Five, Author Six, Author Seven, Author Eight}
+\IEEEauthorblockA{\textit{Department of Computer Engineering} \\
+\textit{Name of College / Institute}\\
+City, Country \\
+\{author5, author6\}@institute.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+large language models, hallucination detection, uncertainty estimation, calibration, abstention, knowledge boundary, false-premise questions
+\end{IEEEkeywords}
+
+\input{sections/introduction}
+\input{sections/related}
+\input{sections/benchmark}
+\input{sections/setup}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

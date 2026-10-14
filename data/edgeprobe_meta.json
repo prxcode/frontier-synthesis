@@ -1,0 +1,17 @@
+{
+  "pop_bin_edges_log10": [
+    0.301,
+    2.176,
+    2.611,
+    3.149,
+    3.923,
+    7.179
+  ],
+  "counts": {
+    "POP": 280,
+    "MP": 200,
+    "FAKE": 140
+  },
+  "flagged_hand_written_terms": [],
+  "seed": 13
+}

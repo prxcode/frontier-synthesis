@@ -1,0 +1,54 @@
+\section{Experimental Setup}
+\label{sec:setup}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize, >={Stealth[length=3.5pt]},
+  box/.style={draw=black!40, rounded corners=2pt, fill=black!3, align=center, inner sep=2.5pt},
+  sig/.style={draw=blue!45!black!40, rounded corners=2pt, fill=blue!5, align=center, inner sep=2.5pt},
+  res/.style={draw=black!40, rounded corners=2pt, fill=orange!8, align=center, inner sep=2.5pt}]
+\node[box, text width=7.6cm] (q) {\textbf{\bench{} question} \quad 380 answerable \;/\; 240 unanswerable};
+\node[box, text width=3.45cm, below=0.32cm of q.south west, anchor=north west] (n) {\textbf{Neutral prompt}\\greedy answer $a_0$};
+\node[box, text width=3.45cm, below=0.32cm of q.south east, anchor=north east] (a) {\textbf{Abstain-allowed prompt}\\greedy answer $a_0'$};
+\node[sig, text width=3.45cm, below=0.25cm of n] (s) {\textbf{7 uncertainty signals}\\LP$_\mu$, LP$_{\min}$ \;|\; Dis., SE$_\ell$ ($K{=}5$)\\Verb. \;|\; \ptrue{} \;|\; \pik{}};
+\node[box, text width=7.6cm, below=0.25cm of s.south west, anchor=north west] (g) {\textbf{Rule-based grader:} correct \,/\, correctly refused \,/\, hallucinated \,/\, over-refused};
+\node[res, text width=3.45cm, below=0.25cm of g.south west, anchor=north west] (m1) {RQ1, RQ2, RQ4: outcome rates,\\index $J$, popularity trends};
+\node[res, text width=3.45cm, below=0.25cm of g.south east, anchor=north east] (m2) {RQ3: AUROC and ECE\\of each signal};
+\draw[->] (q.south -| n.north) -- (n.north);
+\draw[->] (q.south -| a.north) -- (a.north);
+\draw[->] (n) -- (s);
+\draw[->] (a.south) -- (a.south |- g.north);
+\draw[->] (s) -- (s.south |- g.north);
+\draw[->] (g.south -| m1.north) -- (m1.north);
+\draw[->] (g.south -| m2.north) -- (m2.north);
+\end{tikzpicture}
+\caption{Evaluation protocol. Each question is answered under two instructions. The neutral run also yields seven uncertainty signals. A rule-based grader assigns one of four outcomes, from which all metrics are computed.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Models and Inference}
+We evaluate five instruction-tuned open-weight models from two families: Qwen2.5-Instruct with 0.5B, 1.5B and 3B parameters~\cite{qwen2025qwen25}, and Llama-3.2-Instruct with 1B and 3B~\cite{grattafiori2024llama3}. All models use 4-bit (Q4\_K\_M) GGUF weights and run with llama.cpp~\cite{gerganov2023llamacpp} on a single laptop CPU (Intel Core i5-7360U, 2 cores, 8\,GB RAM) with no GPU. This deliberately matches the low-cost, offline setting in which small models are deployed. Each model's own chat template is applied, and instructions are placed in the user turn without a system prompt.
+
+\subsection{Prompting Conditions}
+Under the \textbf{neutral} condition the instruction is ``\emph{Answer the following question in one short sentence.}'' The \textbf{abstain-allowed} condition appends ``\emph{If the question is based on a false premise, asks about something that does not exist, or you do not know the answer, say so instead of guessing.}'' Both answers are decoded greedily (at most 64 tokens).
+
+\subsection{Uncertainty Signals}
+For the neutral answer $a_0=(y_1,\dots,y_T)$ we compute seven signals, each oriented so that a higher value means more uncertainty.
+\begin{itemize}
+\item \textbf{Token likelihood}: the negated mean, LP$_\mu=-\frac{1}{T}\sum_t \log p(y_t\mid y_{<t})$, and the negated minimum, LP$_{\min}=-\min_t \log p(y_t\mid y_{<t})$.
+\item \textbf{Sampling consistency}~\cite{manakul2023selfcheckgpt,kuhn2023semantic}: we draw $K{=}5$ samples $a_1,\dots,a_K$ (temperature 1.0, top-$p$ 0.95, fixed seeds). Two answers are treated as equivalent if both are refusals, or if the tokens they add beyond the question (after removing stop-words) overlap with token-F1 $\geq 0.5$. \emph{Disagreement} is $\text{Dis.}=1-\frac{1}{K}\sum_k \mathbf{1}[a_k\equiv a_0]$. \emph{Lexical semantic entropy} SE$_\ell$ is the entropy of the equivalence classes of $\{a_0,\dots,a_K\}$, a lightweight lexical stand-in for NLI-based semantic entropy~\cite{farquhar2024nature}.
+\item \textbf{Verbalised confidence} (Verb.)~\cite{lin2022words,xiong2024express}: in a follow-up turn the model is asked how confident it is that its answer is correct, as a number from 0 to 100.
+\item \textbf{\ptrue{}}~\cite{kadavath2022know}: given the question and the model's own answer, the probability of ``True'' versus ``False'', renormalised over the two first tokens.
+\item \textbf{\pik{}}: before any answer is shown, the probability of ``Yes'' versus ``No'' to ``\emph{Can you answer this question correctly with a true fact?}''. This is a zero-shot, prompt-based version of the trained \pik{} head in~\cite{kadavath2022know}.
+\end{itemize}
+
+\subsection{Grading}
+A response to an \emph{answerable} question is \textsc{correct} if it contains a normalised gold alias as a whole word or phrase. Otherwise it is \textsc{over-refused} if it declines or disputes the question, and \textsc{hallucinated} if it gives a wrong answer. A response to an \emph{unanswerable} question is \textsc{correctly refused} if it declines, expresses uncertainty, or rejects the premise or the entity's existence, and \textsc{hallucinated} otherwise. Refusals are detected with about 30 regular expressions in two families, abstention (``I don't know'', ``no information'', ``cannot be predicted'') and premise rejection (``there is no'', ``does not exist'', ``never'', ``fictional''). We validated the grader against manual labels for a stratified sample of responses (Section~\ref{sec:validity}).
+
+\subsection{Metrics and Statistics}
+On answerable questions we report the correct, hallucinated and over-refused rates. On unanswerable questions we report the correctly-refused rate and its complement, the hallucination rate. To summarise boundary awareness in one number we use the \emph{boundary index}
+\begin{equation}
+J = P(\text{refuse}\mid\text{unanswerable}) - P(\text{refuse}\mid\text{answerable}),
+\end{equation}
+which is Youden's statistic for refusal treated as a detector of unanswerability. $J{=}1$ means the model refuses exactly the unanswerable questions; $J{=}0$ means refusals carry no information. Detection quality of each signal is measured by AUROC, and calibration by 10-bin ECE~\cite{naeini2015ece}. We report 95\% confidence intervals from 2{,}000 bootstrap resamples over questions~\cite{efron1993bootstrap}. Paired prompt conditions are compared with McNemar's exact test~\cite{mcnemar1947}, twin pairs with the Wilcoxon signed-rank test, and trends over popularity with Spearman's $\rho$ against $\log_{10}$ page views.

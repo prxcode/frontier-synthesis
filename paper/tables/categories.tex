@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Correct-refusal rate (\%) on unanswerable questions by category, neutral / abstain-allowed prompt.}
+\label{tab:categories}
+\setlength{\tabcolsep}{2.6pt}
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Model & NE (35) & FP (35) & NC (2) & TI (0) & FAKE (0) \\
+\midrule
+Qwen2.5-0.5B & 0 / 3 & 0 / 3 & 0 / 0 & nan / nan & nan / nan \\
+\bottomrule
+\multicolumn{6}{p{0.95\columnwidth}}{\scriptsize NE: nonexistent entity; FP: false premise about a real entity; NC: nonexistent category or event; TI: temporal impossibility; FAKE: fabricated entity in a PopQA template.}\\
+\end{tabular}
+\end{table}

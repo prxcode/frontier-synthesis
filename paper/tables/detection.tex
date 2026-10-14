@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\caption{Hallucination detection. Left: AUROC for separating hallucinated from correct answers among non-refused responses (neutral prompt). Right: AUROC for separating unanswerable from answerable questions using the same signals. 0.5 = chance; best per row in bold.}
+\label{tab:detection}
+\setlength{\tabcolsep}{2.4pt}
+\footnotesize
+\begin{tabular}{l c ccccccc c ccccccc}
+\toprule
+ & & \multicolumn{7}{c}{Hallucinated vs.\ correct answer} & & \multicolumn{7}{c}{Unanswerable vs.\ answerable question}\\
+\cmidrule(lr){3-9}\cmidrule(lr){11-17}
+Model & $n$ & LP$_{\mu}$ & LP$_{\min}$ & Dis. & SE$_{\ell}$ & Verb. & P(T) & P(IK) & & LP$_{\mu}$ & LP$_{\min}$ & Dis. & SE$_{\ell}$ & Verb. & P(T) & P(IK) \\
+\midrule
+Qwen2.5-0.5B & 144 & 0.76 & \textbf{0.82} & 0.81 & 0.80 & 0.51 & 0.69 & 0.68 & & 0.70 & \textbf{0.74} & 0.71 & 0.70 & 0.53 & 0.60 & 0.68 \\
+\midrule
+All models & 144 & 0.76 & \textbf{0.82} & 0.81 & 0.80 & 0.51 & 0.69 & 0.68 & &  &  &  &  &  &  &  \\
+\bottomrule
+\end{tabular}
+\end{table*}

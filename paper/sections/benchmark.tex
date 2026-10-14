@@ -1,0 +1,35 @@
+\section{The \bench{} Benchmark}
+\label{sec:benchmark}
+
+\bench{} contains \res{all}{nq} short factual questions in three components (Table~\ref{tab:data}): \res{all}{nA} are answerable and \res{all}{nU} are unanswerable. Every question can be answered, or rejected, in one sentence, so outcomes are graded automatically.
+
+\begin{table}[t]
+\centering
+\caption{Composition of \bench{}. Minimal pairs list the unanswerable question and, after the slash, its answerable twin.}
+\label{tab:data}
+\setlength{\tabcolsep}{3pt}
+\footnotesize
+\begin{tabular}{@{}p{2.45cm} r p{4.45cm}@{}}
+\toprule
+Component & $n$ & Example \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Minimal pairs: unanswerable / answerable twin}}\\
+NE: nonexistent entity & 35+35 & What is the atomic number of \emph{zentronium}? / \dots{} of \emph{zirconium}? \\
+FP: false premise & 35+35 & What is the name of the \emph{third} moon of Mars? / \dots{} the \emph{larger of the two} moons of Mars? \\
+NC: nonexistent category & 15+15 & Who won the Nobel Prize in \emph{Mathematics} in 1994? / Who won the \emph{Abel Prize} in mathematics in 2016? \\
+TI: temporal impossibility & 15+15 & Which \emph{smartphone} did Winston Churchill use during World War II? / Which \emph{country} did \dots{} lead \dots{}? \\
+\addlinespace[2pt]
+\multicolumn{3}{@{}l}{\emph{Knowledge gradient: same seven PopQA templates}}\\
+Real, 5 popularity quintiles & 280 & Who was the composer of \emph{The Sanguine Fan}? \\
+FAKE: fabricated entity & 140 & Who was the composer of \emph{The Thalfeldrun Suite}? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Minimal Pairs}
+We wrote 100 unanswerable questions in four categories and paired each with an answerable \emph{twin} that changes as little as possible (one entity, attribute or year). The categories are: \emph{nonexistent entities} (NE, 35 pairs), such as invented films, elements, treaties or countries; \emph{false premises} about real entities (FP, 35); \emph{nonexistent categories or events} (NC, 15), such as a Nobel Prize in Mathematics or the cancelled 1942 World Cup; and \emph{temporal impossibilities} (TI, 15), such as anachronisms and questions about future events. Three rules guided construction. (i)~Every direct answer to an unanswerable question is wrong, so only a refusal or a correction of the premise counts as correct. (ii)~Twins have short, unambiguous gold answers with aliases (e.g., \emph{Mount Fuji}/\emph{Fuji}). (iii)~We avoided questions for which ``zero'' or ``none'' is a literal answer (e.g., ``How many rings does Mercury have?''). Each invented name was checked with an exact-phrase search of English Wikipedia and an exact label search of Wikidata; one name that returned hits was replaced. Because each pair shares topic, syntax and length, a behavioural difference within a pair can be attributed to answerability rather than surface form.
+
+\subsection{The Knowledge Gradient}
+A model may also fail to know something that \emph{does} exist. To study this second kind of boundary we sampled questions from PopQA~\cite{mallen2023popqa}, whose subjects come with monthly Wikipedia page views as a popularity measure. We used the seven relations with crisp answers (author, capital, composer, country, director, father, place of birth). For work-type relations we excluded single-word titles such as \emph{Hotel}, which are ambiguous. We split popularity into quintiles of $\log_{10}$ page views (boundaries at roughly 150, 410, 1{,}400 and 8{,}300 views/month) and drew 8 questions per relation and quintile, giving 280 questions with PopQA's alias lists as gold answers.
+
+We then extended the gradient past the rarest real entities to entities that do not exist. Using the same seven templates, we generated fabricated subjects from syllable combinations (e.g., \emph{Odile Savurvesk}, \emph{Bravmorrow Province}). A candidate was kept only if none of its invented words appears as a word in any of the 19.26 million article and redirect titles in the English Wikipedia dump of September 2026. Of the 141 candidates examined, one was rejected, leaving 140 FAKE questions (20 per relation). Real and fabricated questions thus share a template, and they differ only in where the subject sits on the gradient: fabricated, rare or popular.

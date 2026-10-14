@@ -1,0 +1,24 @@
+\section{Introduction}
+\label{sec:intro}
+
+\IEEEPARstart{L}{arge} language models (LLMs) answer factual questions fluently, but they also produce \emph{hallucinations}: plausible statements that are false or unsupported~\cite{ji2023survey,huang2025survey}. Ask a model who composed a symphony that does not exist, and it may name a famous composer and rate its own answer 100 out of 100. Such errors are hard to spot precisely because they look like correct answers, and they are costly in education, healthcare and search, where users cannot easily verify what they are told.
+
+Hallucination cannot be removed entirely. Calibrated language models must hallucinate on facts that are rare in their training data~\cite{kalai2024calibrated}, and training and evaluation practices that score abstentions as errors reward guessing~\cite{kalai2025why}. The practical question is therefore not \emph{whether} a model hallucinates but whether it can recognise \emph{when} a question lies beyond its knowledge. In short: \emph{does a language model know what it does not know?}
+
+A question can lie beyond a model's knowledge in two ways. It may have \textbf{no answer at all}, because it presupposes something false or asks about an entity that does not exist~\cite{kim2023qa2,hu2023falseqa}. Or it may have an answer that the model \textbf{never learned}, typically a fact about a rarely mentioned entity~\cite{mallen2023popqa,kandpal2023longtail}. A model that knows its own boundary should decline in both cases and answer otherwise. Prior benchmarks study these cases separately, mix answerable and unanswerable items that also differ in topic and style, and mostly evaluate large proprietary models~\cite{yin2023selfaware,amayuelas2024kuq,kirichenko2025abstentionbench}. Meanwhile, \emph{small} open-weight models of 0.5--3B parameters are increasingly run offline on laptops and phones, for privacy and cost reasons and where connectivity is limited. Their self-knowledge is largely uncharacterised.
+
+This paper studies whether small LLMs recognise the edge of their own knowledge. We ask four research questions, each with a hypothesis drawn from prior work:
+\begin{itemize}
+\item[\textbf{RQ1}] \emph{Behaviour.} Faced with an unanswerable question, do small LLMs refuse or fabricate? \textbf{H1:} under a neutral prompt they fabricate answers to most unanswerable questions, so refusal barely separates unanswerable from answerable questions.
+\item[\textbf{RQ2}] \emph{Boundary.} As entities become rarer and finally fictitious, do refusals and stated confidence follow the falling accuracy? \textbf{H2:} accuracy falls with popularity while refusal and verbal confidence stay flat.
+\item[\textbf{RQ3}] \emph{Latent self-knowledge.} Do signals read from the model's probabilities detect hallucinations better than what the model says? \textbf{H3:} sampling consistency, token likelihood, \ptrue{} and \pik{} beat both chance and verbal confidence.
+\item[\textbf{RQ4}] \emph{Intervention.} Does explicitly permitting abstention help, and at what cost? \textbf{H4:} it reduces hallucination on unanswerable questions but increases over-refusal on answerable ones.
+\end{itemize}
+We make the following contributions:
+\begin{itemize}
+\item \textbf{\bench{}}, a \res{all}{nq}-question benchmark with two controls. First, 100 unanswerable questions (nonexistent entities, false premises, nonexistent categories, temporal impossibilities) are each paired with a \emph{minimally different} answerable twin. Second, a \emph{knowledge gradient} runs from popular to rare real entities (PopQA, five popularity quintiles) and on to fabricated entities that are verified absent from all 19.26M English Wikipedia titles.
+\item A \textbf{four-outcome evaluation protocol} (correct, correctly refused, hallucinated, over-refused) with a single \emph{boundary index} $J$, and a comparison of seven uncertainty signals that separates what a model \emph{says} from what its probabilities \emph{reveal}.
+\item An \textbf{empirical study} of five models from two families under two prompting conditions (\res{all}{nresp} graded question--model pairs), run entirely on a CPU-only laptop and released for full reproducibility.
+\end{itemize}
+
+%FINDINGS%

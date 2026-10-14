@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering
+\caption{Outcome rates (\%) with 95\% bootstrap confidence intervals. Answerable: $n{=}72$ (100 minimal-pair twins + 280 PopQA); unanswerable: $n{=}72$ (100 false-premise twins + 140 fabricated PopQA entities). $J$ = P(refuse$\mid$unanswerable) $-$ P(refuse$\mid$answerable); $J{=}0$ means refusals carry no information about answerability.}
+\label{tab:main}
+\setlength{\tabcolsep}{3.2pt}
+\footnotesize
+\begin{tabular}{ll ccc cc c}
+\toprule
+ & & \multicolumn{3}{c}{Answerable questions} & \multicolumn{2}{c}{Unanswerable questions} & \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}
+Model & Prompt & Correct $\uparrow$ & Hallucinated $\downarrow$ & Over-refused $\downarrow$ & Correctly refused $\uparrow$ & Hallucinated $\downarrow$ & $J$ $\uparrow$ \\
+\midrule
+Qwen2.5-0.5B & Neutral & 75.0\,{\scriptsize[63.9,\,84.7]} & 25.0\,{\scriptsize[15.3,\,34.7]} & 0.0\,{\scriptsize[0.0,\,0.0]} & 0.0\,{\scriptsize[0.0,\,0.0]} & 100.0\,{\scriptsize[100.0,\,100.0]} & 0.0\,{\scriptsize[0.0,\,0.0]} \\
+ & Abstain-allowed & 70.8\,{\scriptsize[59.7,\,81.9]} & 29.2\,{\scriptsize[18.1,\,40.3]} & 0.0\,{\scriptsize[0.0,\,0.0]} & 2.8\,{\scriptsize[0.0,\,6.9]} & 97.2\,{\scriptsize[93.1,\,100.0]} & 2.8\,{\scriptsize[0.0,\,6.9]} \\
+\bottomrule
+\end{tabular}
+\end{table*}
